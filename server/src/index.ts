@@ -27,7 +27,7 @@ const startServer = async () => {
 
   await connect();
 
-  console.log(`server started on port http://localhost:4000/${server.graphqlPath}`);
+  console.log(`server started on port http://localhost:4000${server.graphqlPath}`);
 
   return { server, app };
 };
