@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { Request, Response } from 'express';
 
 export interface TUserModel {
   username: string;
@@ -19,7 +20,13 @@ export interface TCreateAccountArgs {
   password: string;
 }
 
-export interface TLoginArgs{
+export interface TLoginArgs {
   username: string;
   password: string;
+}
+
+export interface TContext {
+  req: Request;
+  res: Response;
+  user?: TUserModel;
 }

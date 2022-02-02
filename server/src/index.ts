@@ -15,13 +15,14 @@ const startServer = async () => {
 	const server = new ApolloServer({
 		schema: makeExecutableSchema({ typeDefs, resolvers }),
 		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+		context: ({ req, res }) => ({ req, res }),
 	});
 
 	await server.start();
 
 	server.applyMiddleware({ app });
 
-	await new Promise<void>((resolve) =>
+	await new Promise<void>(resolve =>
 		httpServer.listen({ port: 4000 }, resolve)
 	);
 
