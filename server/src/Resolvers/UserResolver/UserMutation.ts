@@ -1,12 +1,12 @@
 import { ApolloError } from 'apollo-server-express';
 import { TCreateAccountArgs, TLoginArgs } from '../../__generated__';
 import { generate } from '../../Helpers';
-import { UserModel } from '../../Models';
+import { userModel } from '../../Models';
 
 export const userMutation = {
 	createAccount: async (_: any, args: TCreateAccountArgs) => {
 		try {
-			const create = await UserModel.create({
+			const create = await userModel.create({
 				...args,
 				password: generate.hashPassword(args.password),
 			});
@@ -22,7 +22,7 @@ export const userMutation = {
 	},
 	login: async (_: any, args: TLoginArgs) => {
 		try {
-			const find = await UserModel.findOne({ username: args.username });
+			const find = await userModel.findOne({ username: args.username });
 			if (!find) {
 				return new ApolloError('Account not found');
 			}

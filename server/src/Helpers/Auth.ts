@@ -7,7 +7,7 @@ import {
 } from 'passport-jwt';
 import { AuthenticationError } from 'apollo-server-express';
 import { environment } from '../Config';
-import { UserModel } from '../Models';
+import { userModel } from '../Models';
 import { TContext, TUserModel } from '../__generated__';
 
 const opts: {
@@ -20,7 +20,7 @@ const opts: {
 
 passport.use(
 	new JwtStrategy(opts, async (payload, done) => {
-		const find = await UserModel.findById(payload._id).select('-password');
+		const find = await userModel.findById(payload._id).select('-password');
 
 		if (!find) {
 			done('Unauthorized access', null);
