@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { TUserModel } from '../__generated__';
 
-const Schema = new mongoose.Schema(
+const Schema = new mongoose.Schema<TUserModel>(
 	{
 		username: {
 			type: String,
