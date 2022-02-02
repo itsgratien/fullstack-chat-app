@@ -1,4 +1,5 @@
 import { userMutation, userQuery } from './UserResolver';
+import { messageSubscription } from './MessageResolver';
 
 export const resolvers = {
 	Query: {
@@ -7,5 +8,8 @@ export const resolvers = {
 	},
 	Mutation: {
 		...userMutation,
+	},
+	Subscription: {
+		...messageSubscription,
 	},
 };
