@@ -3,8 +3,9 @@ import { TCreateAccountArgs, TLoginArgs } from '../../__generated__';
 import { generate } from '../../Helpers';
 import { userModel } from '../../Models';
 
-export const userMutation = {
-	createAccount: async (_: any, args: TCreateAccountArgs) => {
+
+class UserMutation{ 
+	createAccount = async (_: any, args: TCreateAccountArgs) => {
 		try {
 			const create = await userModel.create({
 				...args,
@@ -19,8 +20,9 @@ export const userMutation = {
 				'Unable to create account due to internal server error'
 			);
 		}
-	},
-	login: async (_: any, args: TLoginArgs) => {
+	};
+
+	login = async (_: any, args: TLoginArgs) => {
 		try {
 			const find = await userModel.findOne({ username: args.username });
 			if (!find) {
@@ -51,5 +53,6 @@ export const userMutation = {
 		} catch (error) {
 			return new ApolloError('Unable to login due to internal server error');
 		}
-	},
-};
+	};
+}
+export const userMutation = new UserMutation();

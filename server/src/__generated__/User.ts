@@ -10,6 +10,10 @@ export interface TUserModel {
   updatedAt: string;
 }
 
+export interface TUser extends TUserModel{
+  _id: Types.ObjectId | string;
+}
+
 export interface TPayload {
   _id: Types.ObjectId;
 }
@@ -28,5 +32,5 @@ export interface TLoginArgs {
 export interface TContext {
   req: Request;
   res: Response;
-  user?: TUserModel;
+  user?: TUser;
 }

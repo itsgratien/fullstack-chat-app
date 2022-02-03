@@ -8,7 +8,7 @@ import {
 import { AuthenticationError } from 'apollo-server-express';
 import { environment } from '../Config';
 import { userModel } from '../Models';
-import { TContext, TUserModel } from '../__generated__';
+import { TContext, TUser } from '../__generated__';
 
 const opts: {
   secretOrKey: string;
@@ -50,10 +50,10 @@ export const authenticateWithPassportJwt = <T>(
 };
 
 export const isAuth =
-  (next: <Root, Args>(root: Root, args: Args, context: TContext) => any) =>
-  	async <Root, Args>(root: Root, args: Args, context: TContext) => {
+  (next: (root: any, args: any, context: TContext) => any) =>
+  	async <T>(root: T, args: T, context: TContext) => {
   		try {
-  			const user: TUserModel = await authenticateWithPassportJwt(
+  			const user: TUser = await authenticateWithPassportJwt(
   				context.req,
   				context.res
   			);

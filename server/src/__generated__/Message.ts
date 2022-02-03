@@ -14,3 +14,9 @@ export interface TMessage {
   message: string;
   read?: boolean;
 }
+
+export interface TSendMessageArgs {
+  message: string;
+  conversation?: string;
+  receiver: string;
+}
