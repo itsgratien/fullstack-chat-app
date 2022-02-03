@@ -16,16 +16,20 @@ export const typeDefs = gql`
     data: User
   }
 
-  type CreateAccountResponse{
+  type CreateAccountResponse {
     message: String!
     data: User
   }
 
-  type SendMessageResponse{
+  type SendMessageResponse {
     message: String!
   }
 
-  type ViewMessageResponse{
+  type ViewMessageResponse {
+    data: [Message!]!
+  }
+
+  type Message {
     _id: String!
     message: String!
     sender: User!
@@ -33,20 +37,28 @@ export const typeDefs = gql`
     updatedAt: String!
     conversation: String!
   }
-  
+
   type Query {
     hello: String
     me: User
-    viewMessage: ViewMessageResponse!
+    viewMessage(conversation: String!): ViewMessageResponse!
   }
 
   type Mutation {
-    createAccount(username: String!, email: String!, password: String!):CreateAccountResponse
+    createAccount(
+      username: String!
+      email: String!
+      password: String!
+    ): CreateAccountResponse
     login(username: String!, password: String): Login!
-    sendMessage(message: String!, receiver: String!,conversation: String): SendMessageResponse!
+    sendMessage(
+      message: String!
+      receiver: String!
+      conversation: String
+    ): SendMessageResponse!
   }
 
-  type Subscription{
+  type Subscription {
     messageSent: String
   }
 `;

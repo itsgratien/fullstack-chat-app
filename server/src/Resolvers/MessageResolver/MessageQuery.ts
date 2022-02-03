@@ -10,7 +10,7 @@ class MessageQuery {
 				const findConversation = await conversationModel.findOne({
 					$and: [
 						{ _id: args.conversation },
-						{ users: { $in: [context.user?._id] } },
+						{ users: { $in: [{ _id: context.user?._id }] } },
 					],
 				});
 
