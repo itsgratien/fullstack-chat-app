@@ -38,10 +38,28 @@ export const typeDefs = gql`
     conversation: String!
   }
 
+  type LatestMessage{
+    message: String!
+    timestamp: String!
+  }
+
+  type ViewConversation{
+    _id: String!
+    latestMessage: LatestMessage!
+    createdAt: String!
+    updatedAt: String!
+    sender: User!
+  }
+
+  type ViewConversationResponse{
+    data: [ViewConversation]!
+  }
+
   type Query {
     hello: String
     me: User
     viewMessage(conversation: String!): ViewMessageResponse!
+    viewConversation: ViewConversationResponse
   }
 
   type Mutation {

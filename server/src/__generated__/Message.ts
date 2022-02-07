@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { TUser } from '.';
 
 export interface TConversation {
   users: [{ _id: Types.ObjectId }];
@@ -20,4 +21,16 @@ export interface TSendMessageArgs {
   message: string;
   conversation?: string;
   receiver: string;
+}
+
+export interface TViewConversation {
+  _id: string | Types.ObjectId;
+  createdAt: string;
+  updatedAt: string;
+  latestMessage?: {
+    message: string;
+    timestamp: string;
+    _id: string | Types.ObjectId;
+  };
+  sender?: TUser | any;
 }
