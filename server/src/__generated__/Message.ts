@@ -13,6 +13,7 @@ export interface TMessage {
   conversation: Types.ObjectId;
   message: string;
   read?: boolean;
+  timestamp: number;
 }
 
 export interface TSendMessageArgs {

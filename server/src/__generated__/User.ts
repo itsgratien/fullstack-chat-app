@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { Request, Response } from 'express';
+import { JwtPayload } from 'jsonwebtoken';
 
 export interface TUserModel {
   username: string;
@@ -10,7 +11,7 @@ export interface TUserModel {
   updatedAt: string;
 }
 
-export interface TUser extends TUserModel{
+export interface TUser extends TUserModel {
   _id: Types.ObjectId | string;
 }
 
@@ -33,4 +34,8 @@ export interface TContext {
   req: Request;
   res: Response;
   user?: TUser;
+}
+
+export interface TAuthTokenPayload extends JwtPayload {
+  _id: string;
 }

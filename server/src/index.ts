@@ -4,10 +4,15 @@ import express from 'express';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { execute, subscribe } from 'graphql';
-import { SubscriptionServer } from 'subscriptions-transport-ws';
+import {
+	SubscriptionServer,
+	ConnectionParams,
+	ConnectionContext,
+} from 'subscriptions-transport-ws';
 import { connect } from './Config';
 import { typeDefs } from './TypeDefs';
 import { resolvers } from './Resolvers';
+import { isAuthForSubscription } from './Helpers';
 
 const startServer = async () => {
 	const app = express();
@@ -19,6 +24,17 @@ const startServer = async () => {
 			schema: makeExecutableSchema({ typeDefs, resolvers }),
 			execute,
 			subscribe,
+			onConnect: async (
+				connectionParams: ConnectionParams,
+				_websocket: any,
+				context: ConnectionContext
+			) => {
+				let user = null;
+				if (connectionParams.Authorization) {
+					user = await isAuthForSubscription(connectionParams.Authorization);
+				}
+				return { context, user };
+			}
 		},
 		{
 			server: httpServer,

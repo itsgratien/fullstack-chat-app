@@ -4,4 +4,4 @@ export const event = {
 	messageSent: 'MESSAGE_SENT',
 };
 
-export const pubSub = new PubSub();
+export const pubsub = new PubSub();

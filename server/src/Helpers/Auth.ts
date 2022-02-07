@@ -9,6 +9,7 @@ import { AuthenticationError } from 'apollo-server-express';
 import { environment } from '../Config';
 import { userModel } from '../Models';
 import { TContext, TUser } from '../__generated__';
+import { generate } from '../Helpers';
 
 const opts: {
   secretOrKey: string;
@@ -63,3 +64,17 @@ export const isAuth =
   			return new AuthenticationError(error);
   		}
   	};
+
+export const isAuthForSubscription = async (bearerToken: string) => {
+	const token = bearerToken.split(' ');
+
+	const payload = generate.verifyAuthToken(token[1] || token[0]);
+
+	if (!payload) {
+		return undefined;	
+	}
+	const findUser = await userModel.findById(payload._id).select('-password');
+
+	if (!findUser) return undefined;
+	return findUser;
+};

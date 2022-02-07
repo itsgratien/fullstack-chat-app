@@ -2,12 +2,15 @@ import { ApolloError } from 'apollo-server-express';
 import { isAuth } from '../../Helpers';
 import { TContext, TSendMessageArgs } from '../../__generated__';
 import { messageModel, conversationModel, userModel } from '../../Models';
+import { pubsub, event } from '../../PubSub';
 
 class MessageMutation {
 	sendMessage = isAuth(
 		async (_: any, args: TSendMessageArgs, context: TContext) => {
 			try {
 				const { conversation } = args;
+
+				const timestamp = String(Date.now());
 
 				const findUser = await userModel.findById(args.receiver);
 				if (!findUser) {
@@ -17,6 +20,13 @@ class MessageMutation {
 				if (String(findUser._id) === String(context.user?._id)) {
 					return new ApolloError('Unable to send message');
 				}
+
+				pubsub.publish(event.messageSent, {
+					messageSent: {
+						...args,
+						timestamp,
+					},
+				});
 
 				if (conversation) {
 					const findConversation = await conversationModel.findById(
@@ -29,6 +39,7 @@ class MessageMutation {
 						conversation,
 						message: args.message,
 						sender: context.user ? String(context.user._id) : '',
+						timestamp,
 					});
 
 					return {
@@ -43,7 +54,9 @@ class MessageMutation {
 						conversation: createConversation._id,
 						message: args.message,
 						sender: context.user?._id || '',
+						timestamp,
 					});
+
 					return {
 						message: 'message sent',
 					};

@@ -20,6 +20,10 @@ const Schema = new mongoose.Schema<TMessage>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Conversation',
 		},
+		timestamp: {
+			type: Number,
+			required: true,
+		},
 	},
 	{ timestamps: true }
 );

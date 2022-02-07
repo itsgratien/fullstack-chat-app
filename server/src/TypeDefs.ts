@@ -58,7 +58,14 @@ export const typeDefs = gql`
     ): SendMessageResponse!
   }
 
+  type MessageSent {
+    message: String!
+    conversation: String
+    receiver: String!
+    timestamp: String!
+  }
+
   type Subscription {
-    messageSent: String
+    messageSent: MessageSent
   }
 `;
