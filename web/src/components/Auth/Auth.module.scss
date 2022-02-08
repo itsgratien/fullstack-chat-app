@@ -1,0 +1,47 @@
+.auth {
+  position: relative;
+  flex: 1 1;
+  padding: 0 200px;
+  margin-top: 80px;
+  background: none;
+}
+.authGroup {
+  position: relative;
+  min-height: 400px;
+  padding-top: 30px;
+  width: 50%;
+  &:first-child {
+    border-right: 1px solid #ddd;
+    padding-right: 10px;
+  }
+  &:last-child {
+    padding-left: 20px;
+  }
+  .title {
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+}
+.inputGroup {
+  border: 1px solid #ddd;
+  height: 55px;
+  border-radius: 10px;
+  padding: 0 10px;
+  margin: 10px;
+  flex-basis: 45%;
+  box-sizing: border-box;
+  .input {
+    font-size: 13px;
+    background: none;
+    ::placeholder {
+      color: rgba(0, 0, 0, 0.6);
+    }
+  }
+}
+
+.button{
+  height: 50px;
+  width: 100px;
+  box-shadow: 0px 4px 4px rgba(37, 111, 255, 0.47);
+  border-radius: 10px;
+}
