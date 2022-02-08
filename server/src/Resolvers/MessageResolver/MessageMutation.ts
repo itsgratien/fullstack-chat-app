@@ -21,8 +21,8 @@ class MessageMutation {
 					return new ApolloError('Unable to send message');
 				}
 
-				pubsub.publish(event.messageSent, {
-					messageSent: {
+				pubsub.publish(event.receiveMessage, {
+					receiveMessage: {
 						...args,
 						timestamp,
 					},

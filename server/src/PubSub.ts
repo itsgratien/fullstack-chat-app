@@ -1,7 +1,7 @@
 import { PubSub } from 'graphql-subscriptions';
 
 export const event = {
-	messageSent: 'MESSAGE_SENT',
+	receiveMessage: 'RECEIVE_MESSAGE',
 	typing: 'TYPING'
 };
 

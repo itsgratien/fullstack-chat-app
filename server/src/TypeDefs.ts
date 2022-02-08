@@ -86,7 +86,7 @@ export const typeDefs = gql`
     handleWhoIsTyping(message: String, receiver: String!): HandleWhoIsTyping
   }
 
-  type MessageSent {
+  type ReceiveMessageResponse {
     message: String!
     conversation: String
     receiver: String!
@@ -94,7 +94,7 @@ export const typeDefs = gql`
   }
 
   type Subscription {
-    messageSent: MessageSent
+    receiveMessage: ReceiveMessageResponse
     getWhoIsTyping: GetWhoIsTypingResponse
   }
 `;

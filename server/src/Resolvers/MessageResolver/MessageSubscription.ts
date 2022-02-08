@@ -2,11 +2,11 @@ import { withFilter } from 'graphql-subscriptions';
 import { pubsub, event } from '../../PubSub';
 
 export const messageSubscription = {
-	messageSent: {
+	receiveMessage: {
 		subscribe: withFilter(
-			() => pubsub.asyncIterator(event.messageSent),
+			() => pubsub.asyncIterator(event.receiveMessage),
 			(payload, _variables, context) =>
-				String(context.user._id) === payload.messageSent.receiver
+				String(context.user._id) === payload.receiveMessage.receiver
 		),
 	},
 	getWhoIsTyping: {
