@@ -1,7 +1,8 @@
 import { ApolloError } from 'apollo-server-express';
 import { isAuth } from '../../Helpers';
-import { TContext, TUser, TViewConversation } from '../../__generated__';
+import { TContext, TViewConversation } from '../../__generated__';
 import { messageModel, conversationModel, userModel } from '../../Models';
+import { pubsub, event } from '../../PubSub';
 
 class MessageQuery {
 	viewMessage = isAuth(
@@ -71,12 +72,11 @@ class MessageQuery {
 						conversations.push(specificConversation);
 					}
 				}
-				
+
 				return {
 					data: conversations,
 				};
 			} catch (error) {
-				console.log('error', error);
 				return new ApolloError(
 					'Unable to view conversations due to internal server error'
 				);

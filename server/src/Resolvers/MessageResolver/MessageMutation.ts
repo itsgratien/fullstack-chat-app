@@ -68,6 +68,14 @@ class MessageMutation {
 			}
 		}
 	);
+	handleWhoIsTyping = isAuth(
+		(_root: any, args: { message: string; receiver: string }) => {
+			pubsub.publish(event.typing, {
+				getWhoIsTyping: args,
+			});
+			return { message: args.message };
+		}
+	);
 }
 
 export const messageMutation = new MessageMutation();
