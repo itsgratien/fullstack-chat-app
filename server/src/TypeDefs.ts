@@ -25,7 +25,7 @@ export const typeDefs = gql`
     message: String!
   }
 
-  type ViewMessageResponse {
+  type GetMessageResponse {
     data: [Message!]!
   }
 
@@ -43,16 +43,16 @@ export const typeDefs = gql`
     timestamp: String!
   }
 
-  type ViewConversation {
+  type GetConversation {
     _id: String!
-    latestMessage: LatestMessage!
+    latestMessage: LatestMessage
     createdAt: String!
     updatedAt: String!
-    sender: User!
+    sender: User
   }
 
-  type ViewConversationResponse {
-    data: [ViewConversation]!
+  type GetConversationResponse {
+    data: [GetConversation]!
   }
 
   type GetWhoIsTypingResponse {
@@ -67,8 +67,8 @@ export const typeDefs = gql`
   type Query {
     hello: String
     me: User
-    viewMessage(conversation: String!): ViewMessageResponse!
-    viewConversation: ViewConversationResponse
+    getMessages(conversation: String!): GetMessageResponse!
+    getConversations: GetConversationResponse
   }
 
   type Mutation {

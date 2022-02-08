@@ -2,10 +2,9 @@ import { ApolloError } from 'apollo-server-express';
 import { isAuth } from '../../Helpers';
 import { TContext, TViewConversation } from '../../__generated__';
 import { messageModel, conversationModel, userModel } from '../../Models';
-import { pubsub, event } from '../../PubSub';
 
 class MessageQuery {
-	viewMessage = isAuth(
+	getMessages = isAuth(
 		async (_: any, args: { conversation: string }, context: TContext) => {
 			try {
 				const findConversation = await conversationModel.findOne({
@@ -37,7 +36,7 @@ class MessageQuery {
 			}
 		}
 	);
-	viewConversation = isAuth(
+	getConversations = isAuth(
 		async (_root: any, _args: any, context: TContext) => {
 			try {
 				const find = await conversationModel.find({
