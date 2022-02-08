@@ -5,7 +5,7 @@ import { PowerOutline } from 'react-ionicons';
 
 export const Header = () => {
   return (
-    <div className={classname(style.header, 'absolute top-0 left-0 right-0 w-full flex items-center')}>
+    <div className={classname(style.header, 'w-full flex items-center justify-between')}>
       <div className={classname('flex items-center')}>
         <div>
           <img src="/hand.png" alt="hand" />
