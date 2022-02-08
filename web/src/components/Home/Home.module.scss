@@ -1,0 +1,17 @@
+.home{}
+.conversation{
+    width: 340px;
+    background-color: white;
+    border-right: 1px solid #f8f8f8;
+    .search{
+        height: 70px;
+        padding: 8px;
+        input{
+            font-size: 13px;
+            color: rgba(0, 0, 0, 0.6);
+        }
+        button{
+            width: 40px;
+        }
+    }
+}
