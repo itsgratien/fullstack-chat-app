@@ -9,6 +9,7 @@ import { Title } from './Title';
 import { Button } from './Button';
 import * as Types from '__generated__';
 import { Enum } from 'utils';
+import { useRouter } from 'next/router';
 
 const loginSchema = object().shape({
   username: string().required('username is required'),
@@ -16,14 +17,27 @@ const loginSchema = object().shape({
 });
 
 export const Login = () => {
-  const [login, { error, loading }] = useMutation<
-    Types.TLoginResponse,
-    Types.TLoginArgs
-  >(Types.LOGIN_MUTATION, {
-    onCompleted: res => {
-      localStorage.setItem(Enum.token, res.login.token);
-    },
-  });
+  const [error, setError] = React.useState<string>();
+
+  const [loading, setLoading] = React.useState<boolean>(false);
+
+  const router = useRouter();
+
+  const [login, res] = useMutation<Types.TLoginResponse, Types.TLoginArgs>(
+    Types.LOGIN_MUTATION,
+    {
+      onCompleted: res => {
+        if (res && res.login) {
+          localStorage.setItem(Enum.token, `Bearer ${res.login.token}`);
+          router.push('/home');
+        }
+      },
+      onError: e => {
+        setError(e.message);
+        setLoading(false);
+      },
+    }
+  );
 
   const formik = useFormik({
     validationSchema: loginSchema,
@@ -33,6 +47,10 @@ export const Login = () => {
     },
     initialValues: { username: '', password: '' },
   });
+
+  React.useEffect(() => {
+    if (res.loading) setLoading(res.loading);
+  }, [res.loading]);
 
   return (
     <div className={classname('relative flex-grow', style.authGroup)}>
@@ -56,6 +74,11 @@ export const Login = () => {
               error={formik.errors.password}
             />
           </div>
+          {error && (
+            <small className="text-red-600 text-xs ml-3 font-bold">
+              {error}
+            </small>
+          )}
           <Button name="login" type="submit" loading={loading} />
         </form>
       </div>
