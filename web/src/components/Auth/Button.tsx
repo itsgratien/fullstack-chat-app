@@ -15,7 +15,7 @@ export const Button = ({ type, name, loading }: Props) => {
         type={type || 'button'}
         className={classname(
           'outline-none focus:outline-none bg-primary text-white ml-3 font-bold',
-          loading ? 'opacity-75' : 'opacity-100',
+          loading ? 'opacity-75' : '',
           style.button
         )}
         disabled={loading}

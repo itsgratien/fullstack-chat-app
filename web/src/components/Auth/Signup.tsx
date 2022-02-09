@@ -29,11 +29,14 @@ export const Signup = () => {
     onCompleted: res => {
       if (res && res.createAccount) {
         setMessage(res.createAccount.message);
+        setLoading(false);
+        setError(undefined);
       }
     },
     onError: e => {
       setError(e.message);
       setLoading(false);
+      setMessage(undefined);
     },
   });
 
@@ -46,15 +49,23 @@ export const Signup = () => {
     initialValues: { username: '', password: '', email: '' },
   });
 
+  const { resetForm } = formik;
+
   React.useEffect(() => {
     if (res.loading) setLoading(res.loading);
   }, [res.loading]);
+
+  React.useEffect(() => {
+    if (res.data && res.data.createAccount) {
+      resetForm();
+    }
+  }, [res.data, resetForm]);
 
   return (
     <div className={classname('relative flex-grow', style.authGroup)}>
       <Title title="Signup" />
       <div className={classname(style.authForm)}>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} autoComplete='off'>
           <div
             className={classname(
               'flex items-center flex-wrap w-full',

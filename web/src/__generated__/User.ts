@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-export interface TUser{
+export interface TUser {
   _id: string;
   username: string;
   email: string;
@@ -19,14 +19,14 @@ export interface TLoginResponse {
   };
 }
 export const USER_TYPE = gql`
-  type User {
-    _id: String!
-    username: String!
-    email: String!
-    password: String
-    profilePicture: String
-    createdAt: String
-    updatedAt: String
+  fragment UserFragment on User {
+    _id
+    username
+    email
+    password
+    profilePicture
+    createdAt
+    updatedAt
   }
 `;
 export const LOGIN_MUTATION = gql`
@@ -40,20 +40,22 @@ export const LOGIN_MUTATION = gql`
 export const SIGNUP_MUTATION = gql`
   ${USER_TYPE}
   mutation Signup($username: String!, $password: String!, $email: String!) {
-    createAccount(username: $username, password: $password, email: $email){
+    createAccount(username: $username, password: $password, email: $email) {
       message
-      user: User
+      data {
+        ...UserFragment
+      }
     }
   }
 `;
 
-export interface TSignupVariables extends TLoginArgs{
+export interface TSignupVariables extends TLoginArgs {
   email: string;
 }
 
-export interface TSignupResponse{
+export interface TSignupResponse {
   createAccount: {
     message: string;
-    user: TUser;
-  }
+    data: TUser;
+  };
 }
