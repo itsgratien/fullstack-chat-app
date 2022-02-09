@@ -1,6 +1,8 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { Home as HomeComponent } from 'components/Home';
+import { apolloClient } from 'utils';
+import * as Types from '__generated__';
 
 const Home: NextPage = () => {
   return (
@@ -16,3 +18,17 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getStaticProps = async () => {
+  // const res = await apolloClient().query<Types.TGetConversationResponse>({
+  //   query: Types.GET_ALL_CONVERSATION,
+  // });
+
+  // console.log('res', res.errors);
+
+  return {
+    props: {
+      conversations: 'hello'
+    }
+  }
+};

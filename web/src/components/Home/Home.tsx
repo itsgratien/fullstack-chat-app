@@ -12,10 +12,13 @@ export const Home = () => {
       <div className={classname('flex-grow relative', style.rightSide)}>
         <Header />
         <div className={classname('relative', style.messages)}>
-          <div className={classname('flex items-center justify-center h-full', style.hint)}>
-            <span>
-              Click on your inbox section to preview message
-            </span>
+          <div
+            className={classname(
+              'flex items-center justify-center h-full',
+              style.hint
+            )}
+          >
+            <span>Click on your inbox section to preview message</span>
           </div>
         </div>
         <WriteMessage />

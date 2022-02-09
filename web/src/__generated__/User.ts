@@ -18,7 +18,7 @@ export interface TLoginResponse {
     token: string;
   };
 }
-export const USER_TYPE = gql`
+export const USER_FRAGMENT = gql`
   fragment UserFragment on User {
     _id
     username
@@ -38,7 +38,7 @@ export const LOGIN_MUTATION = gql`
 `;
 
 export const SIGNUP_MUTATION = gql`
-  ${USER_TYPE}
+  ${USER_FRAGMENT}
   mutation Signup($username: String!, $password: String!, $email: String!) {
     createAccount(username: $username, password: $password, email: $email) {
       message

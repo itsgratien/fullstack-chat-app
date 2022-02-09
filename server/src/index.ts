@@ -56,7 +56,10 @@ const startServer = async () => {
 				},
 			},
 		],
-		context: ({ req, res }) => ({ req, res }),
+		context: ({ req, res }) => {
+			console.log('authorization',req.headers['authorization']);
+			return { req, res };
+		},
 	});
 
 	await server.start();
