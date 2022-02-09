@@ -5,7 +5,7 @@ import { apolloClient } from '../utils/ApolloSetup';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={apolloClient}>
+    <ApolloProvider client={apolloClient()}>
       <Component {...pageProps} />
     </ApolloProvider>
   );
