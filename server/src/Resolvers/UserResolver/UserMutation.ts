@@ -23,6 +23,7 @@ class UserMutation{
 	};
 
 	login = async (_: any, args: TLoginArgs) => {
+		console.log('aha');
 		try {
 			const find = await userModel.findOne({ username: args.username });
 			if (!find) {
