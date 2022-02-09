@@ -6,6 +6,8 @@ import { useFormik } from 'formik';
 import { object, string } from 'yup';
 import { Title } from './Title';
 import { Button } from './Button';
+import * as Types from '__generated__';
+import { useMutation } from '@apollo/client';
 
 const signupSchema = object().shape({
   username: string().required('username is required'),
@@ -14,14 +16,39 @@ const signupSchema = object().shape({
 });
 
 export const Signup = () => {
+  const [error, setError] = React.useState<string>();
+
+  const [message, setMessage] = React.useState<string>();
+
+  const [loading, setLoading] = React.useState<boolean>(false);
+
+  const [createAccount, res] = useMutation<
+    Types.TSignupResponse,
+    Types.TSignupVariables
+  >(Types.SIGNUP_MUTATION, {
+    onCompleted: res => {
+      if (res && res.createAccount) {
+        setMessage(res.createAccount.message);
+      }
+    },
+    onError: e => {
+      setError(e.message);
+      setLoading(false);
+    },
+  });
+
   const formik = useFormik({
     validationSchema: signupSchema,
     validateOnChange: false,
     onSubmit: values => {
-      console.log(values);
+      createAccount({ variables: values });
     },
     initialValues: { username: '', password: '', email: '' },
   });
+
+  React.useEffect(() => {
+    if (res.loading) setLoading(res.loading);
+  }, [res.loading]);
 
   return (
     <div className={classname('relative flex-grow', style.authGroup)}>
@@ -57,7 +84,17 @@ export const Signup = () => {
               error={formik.errors.password}
             />
           </div>
-          <Button name="signup" type="submit" />
+          {error && (
+            <small className="text-red-600 text-xs ml-3 font-bold">
+              {error}
+            </small>
+          )}
+          {message && (
+            <small className="text-green-600 text-xs ml-3 font-bold">
+              {message}
+            </small>
+          )}
+          <Button name="signup" type="submit" loading={loading} />
         </form>
       </div>
     </div>
