@@ -59,3 +59,21 @@ export interface TSignupResponse {
     data: TUser;
   };
 }
+
+export const GET_CURRENT_USER = gql`
+  query GetCurrentProfile {
+    me {
+      _id
+      username
+      email
+    }
+  }
+`;
+
+export interface TGetCurrentUserResponse {
+  me: {
+    _id: string;
+    username: string;
+    email: string;
+  };
+}

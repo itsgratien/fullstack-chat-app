@@ -20,15 +20,25 @@ const Home: NextPage = () => {
 export default Home;
 
 export const getStaticProps = async () => {
-  // const res = await apolloClient().query<Types.TGetConversationResponse>({
-  //   query: Types.GET_ALL_CONVERSATION,
-  // });
+  try {
+    const res = await apolloClient().query<Types.TGetCurrentUserResponse>({
+      query: Types.GET_CURRENT_USER,
+      errorPolicy: 'all',
+    });
 
-  // console.log('res', res.errors);
+    console.log('response', res);
 
-  return {
-    props: {
-      conversations: 'hello'
-    }
+    return {
+      props: {
+        conversations: 'hello',
+      },
+    };
+  } catch (error) {
+    console.log('error', error);
+    return {
+      props: {
+        error: 'errors',
+      },
+    };
   }
 };

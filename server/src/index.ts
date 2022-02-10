@@ -1,6 +1,7 @@
 import http from 'http';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
+import cors from 'cors';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import { execute, subscribe } from 'graphql';
@@ -16,6 +17,13 @@ import { isAuthForSubscription } from './Helpers';
 
 const startServer = async () => {
 	const app = express();
+
+	app.use(
+		cors({
+			credentials: true,
+			origin: 'http://localhost:3000',
+		})
+	);
 
 	const httpServer = http.createServer(app);
 
@@ -34,7 +42,7 @@ const startServer = async () => {
 					user = await isAuthForSubscription(connectionParams.Authorization);
 				}
 				return { context, user };
-			}
+			},
 		},
 		{
 			server: httpServer,
@@ -56,10 +64,7 @@ const startServer = async () => {
 				},
 			},
 		],
-		context: ({ req, res }) => {
-			console.log('authorization',req.headers['authorization']);
-			return { req, res };
-		},
+		context: ({ req, res }) => ({req, res}),
 	});
 
 	await server.start();

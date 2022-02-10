@@ -3,8 +3,7 @@ import { TCreateAccountArgs, TLoginArgs } from '../../__generated__';
 import { generate } from '../../Helpers';
 import { userModel } from '../../Models';
 
-
-class UserMutation{ 
+class UserMutation {
 	createAccount = async (_: any, args: TCreateAccountArgs) => {
 		try {
 			const create = await userModel.create({
@@ -25,6 +24,7 @@ class UserMutation{
 	login = async (_: any, args: TLoginArgs) => {
 		try {
 			const find = await userModel.findOne({ username: args.username });
+
 			if (!find) {
 				return new ApolloError('Account not found');
 			}
@@ -47,11 +47,13 @@ class UserMutation{
 					email: find.email,
 					profilePicture: find.profilePicture,
 					createdAt: find.createdAt,
-					updatedAt: find.updatedAt
+					updatedAt: find.updatedAt,
 				},
 			};
-		} catch (error) {
-			return new ApolloError('Unable to login due to internal server error');
+		} catch (error: any) {
+			return new ApolloError(
+				`Unable to login due to internal server error ${error.message}`
+			);
 		}
 	};
 }

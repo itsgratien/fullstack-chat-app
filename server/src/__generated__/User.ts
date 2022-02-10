@@ -39,3 +39,7 @@ export interface TContext {
 export interface TAuthTokenPayload extends JwtPayload {
   _id: string;
 }
+
+export enum CookieName{
+  token = 'token'
+}

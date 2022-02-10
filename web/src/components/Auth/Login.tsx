@@ -26,9 +26,16 @@ export const Login = () => {
   const [login, res] = useMutation<Types.TLoginResponse, Types.TLoginArgs>(
     Types.LOGIN_MUTATION,
     {
-      onCompleted: res => {
+      onCompleted: async (res) => {
         if (res && res.login) {
-          localStorage.setItem(Enum.token, `Bearer ${res.login.token}`);
+          const set = await fetch('/api/login', {
+            method: 'POST',
+            body: JSON.stringify(res.login),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          await set.json();
           router.push('/home');
         }
       },
@@ -38,6 +45,7 @@ export const Login = () => {
       },
     }
   );
+
 
   const formik = useFormik({
     validationSchema: loginSchema,
