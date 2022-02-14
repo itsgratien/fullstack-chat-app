@@ -13,7 +13,7 @@ export interface TLatestMessage {
 }
 export interface TGetConversation {
   _id: string;
-  latestMessge: TLatestMessage;
+  latestMessage: TLatestMessage;
   createdAt: string;
   updatedAt: string;
   sender: TUser;
@@ -41,11 +41,20 @@ export const GET_CONVERSATION_FRAGMENT = gql`
   }
 `;
 export const GET_ALL_CONVERSATION = gql`
-  ${GET_CONVERSATION_FRAGMENT}
   query GetConversations {
     getConversations {
       data {
-        ...GetConversationFragment
+        _id
+        latestMessage {
+          message
+          timestamp
+        }
+        sender{
+          username
+          _id
+        }
+        createdAt
+        updatedAt
       }
     }
   }

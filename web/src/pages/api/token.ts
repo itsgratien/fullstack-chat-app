@@ -7,7 +7,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const c = new cookie(req, res);
     return res.json({ token: c.get(Enum.token) });
   } catch (error: any) {
-      console.log('aha', error);
     return res.status(500).json({ errors: error.message });
   }
 };

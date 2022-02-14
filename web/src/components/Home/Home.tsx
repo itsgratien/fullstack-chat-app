@@ -4,11 +4,15 @@ import style from './Home.module.scss';
 import { Conversation } from './Conversation';
 import { Header } from './Header';
 import { WriteMessage } from './WriteMessage';
+import * as Types from '__generated__';
 
-export const Home = () => {
+interface Props{
+  conversations?: Types.TGetConversation[]
+}
+export const Home = ({ conversations }: Props) => {
   return (
     <main className={classname('w-full h-screen flex', style.home)}>
-      <Conversation />
+      <Conversation conversations={conversations} />
       <div className={classname('flex-grow relative', style.rightSide)}>
         <Header />
         <div className={classname('relative', style.messages)}>
