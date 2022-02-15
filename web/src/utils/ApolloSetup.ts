@@ -1,17 +1,19 @@
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink, makeVar } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { environment } from './Environment';
 import { Enum } from './Enum';
+import * as Types from '__generated__';
 
 const isServer = typeof window === 'undefined';
+
+export const loggedInUserVar = makeVar<Types.TUser | undefined>(undefined);
 
 const httpLink = () => {
   return new HttpLink({
     uri: environment.httpUri,
     credentials: 'include',
     headers: {
-      Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWZhNmNiZTU5NmVhN2VhYTdlYTU0MjkiLCJpYXQiOjE2NDQ4Mjk3ODEsImV4cCI6MTY0NDkxNjE4MX0.XdVDWTeZP0Oamgr0vLOKkqh5eidDtk5tPMUGWfnEezQ',
+      Authorization: isServer ? '' : localStorage.getItem(Enum.token),
     },
   });
 };
@@ -25,7 +27,19 @@ const wsLink = () =>
 export const apolloClient = () => {
   const ssrMode = isServer;
   return new ApolloClient({
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            loggedInUser: {
+              read: () => {
+                return loggedInUserVar();
+              },
+            },
+          },
+        },
+      },
+    }),
     link: ssrMode ? httpLink() : wsLink(),
     ssrMode,
   });

@@ -16,6 +16,7 @@ export interface TLoginArgs {
 export interface TLoginResponse {
   login: {
     token: string;
+    data: TUser;
   };
 }
 export const USER_FRAGMENT = gql`
@@ -30,9 +31,13 @@ export const USER_FRAGMENT = gql`
   }
 `;
 export const LOGIN_MUTATION = gql`
+  ${USER_FRAGMENT}
   mutation Login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       token
+      data {
+        ...UserFragment
+      }
     }
   }
 `;
@@ -60,20 +65,25 @@ export interface TSignupResponse {
   };
 }
 
-export const GET_CURRENT_USER = gql`
+export const GET_USER_PROFILE = gql`
+  ${USER_FRAGMENT}
   query GetCurrentProfile {
     me {
-      _id
-      username
-      email
+      ...UserFragment
     }
   }
 `;
 
 export interface TGetCurrentUserResponse {
-  me: {
-    _id: string;
-    username: string;
-    email: string;
-  };
+  me: TUser;
+}
+
+export const GET_LOGGED_IN_USER = gql`
+  query GetLoggedInUser {
+    loggedInUser @client
+  }
+`;
+
+export interface TGetLoggedInUser{
+  loggedInUser: TUser;
 }

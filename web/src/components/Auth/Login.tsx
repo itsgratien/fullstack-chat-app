@@ -8,7 +8,7 @@ import { object, string } from 'yup';
 import { Title } from './Title';
 import { Button } from './Button';
 import * as Types from '__generated__';
-import { Enum } from 'utils';
+import { Enum, loggedInUserVar } from 'utils';
 import { useRouter } from 'next/router';
 
 const loginSchema = object().shape({
@@ -28,15 +28,8 @@ export const Login = () => {
     {
       onCompleted: async res => {
         if (res && res.login) {
-          const set = await fetch('/api/login', {
-            method: 'POST',
-            body: JSON.stringify(res.login),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
-          await set.json();
-          console.log('res', res.login.token);
+          localStorage.setItem(Enum.token, res.login.token);
+          loggedInUserVar(res.login.data);
           router.push('/home');
         }
       },
