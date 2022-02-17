@@ -4,7 +4,7 @@ export interface TConversationItem {
   username: string;
   message: string;
   timestamp: number;
-  conversationId: string | number;
+  conversationId: string;
   senderId?: string;
 }
 
@@ -91,3 +91,32 @@ export const SEND_MESSAGE_GQL = gql`
     }
   }
 `;
+
+export const SEARCH_USER_GQL = gql`
+${GET_CONVERSATION_FRAGMENT}
+mutation SearchUser($user: String!){
+  searchUser(user: $user){
+    data{
+      user{
+          _id
+          username
+          email
+          profilePicture
+      }
+      conversation{
+        ...GetConversationFragment
+      }
+    }
+  }
+}
+`;
+
+export interface TSearchUserArgs {
+  user: string;
+}
+
+export interface TSearchUserResponse {
+  searchUser: {
+    data: TGetAllConversation[];
+  };
+}

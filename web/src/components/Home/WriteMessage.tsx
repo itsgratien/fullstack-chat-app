@@ -13,18 +13,17 @@ const SendMessageSchema = object().shape({
 });
 
 interface Props {
-  receiver: string;
   conversation?: string
 }
 
-export const WriteMessage = ({ receiver, conversation }: Props) => {
+export const WriteMessage = ({ conversation }: Props) => {
   const [sendMessage] = useMutation<
     Types.TSendMessageResponse,
     Types.TSendMessageArgs
   >(Types.SEND_MESSAGE_GQL);
 
   const handleSubmit = (values: Types.TSendMessageArgs) =>
-    sendMessage({ variables: { ...values, receiver, conversation } });
+    sendMessage({ variables: { ...values, receiver: '', conversation } });
 
   const formik = useFormik({
     initialValues: { receiver: '', message: '' },

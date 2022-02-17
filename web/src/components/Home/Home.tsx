@@ -4,21 +4,10 @@ import style from './Home.module.scss';
 import { Conversation } from './Conversation';
 import { Header } from './Header';
 import { WriteMessage } from './WriteMessage';
-import * as Types from '__generated__';
-import { useQuery } from '@apollo/client';
 
 export const Home = () => {
   const [conversationId, setConversationId] = React.useState<string>();
 
-  const [receiverId, setReceiverId] = React.useState<string>();
-
-  const { data, error } = useQuery<Types.TGetConversationResponse>(
-    Types.GET_ALL_CONVERSATION
-  );
-
-  console.log('data', data?.getConversations.data);
-  console.log('error', error);
-  
   return (
     <main
       className={classname(
@@ -26,7 +15,7 @@ export const Home = () => {
         style.home
       )}
     >
-      <Conversation conversations={data?.getConversations.data} />
+      <Conversation setConversationId={setConversationId} />
       <div className={classname('flex-grow relative', style.rightSide)}>
         <div className={style.divider}>
           <Header />
@@ -43,7 +32,6 @@ export const Home = () => {
             </div>
           </div>
           <WriteMessage
-            receiver={receiverId || ''}
             conversation={conversationId}
           />
         </div>
