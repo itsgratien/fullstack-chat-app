@@ -7,6 +7,10 @@ export interface TConversation {
   updatedAt: string;
 }
 
+export interface TConversationModel extends TConversation{
+  _id: Types.ObjectId | string;
+}
+
 export interface TMessage {
   createdAt: string;
   updatedAt: string;
@@ -33,4 +37,9 @@ export interface TViewConversation {
     _id: string | Types.ObjectId;
   };
   sender?: TUser | any;
+}
+
+export interface TVConversation{
+  user: TUser;
+  conversation?: TViewConversation;
 }

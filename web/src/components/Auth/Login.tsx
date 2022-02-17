@@ -32,7 +32,7 @@ export const Login = () => {
           // store loggedin user in localstorage
           const user = JSON.stringify(res.login.data);
           localStorage.setItem(Enum.LoggedInUser, user);
-          router.push('/home');
+          window.location.href = '/home';
         }
       },
       onError: e => {

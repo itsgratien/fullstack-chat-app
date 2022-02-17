@@ -1,7 +1,14 @@
 import { ApolloError } from 'apollo-server-express';
-import { TCreateAccountArgs, TLoginArgs } from '../../__generated__';
-import { generate } from '../../Helpers';
-import { userModel } from '../../Models';
+import {
+	TContext,
+	TCreateAccountArgs,
+	TLoginArgs,
+	TSearchUser,
+	TVConversation,
+} from '../../__generated__';
+import { generate, isAuth } from '../../Helpers';
+import { userModel, conversationModel } from '../../Models';
+import { messageHelper } from '../MessageResolver/MessageHelper';
 
 class UserMutation {
 	createAccount = async (_: any, args: TCreateAccountArgs) => {
@@ -56,5 +63,54 @@ class UserMutation {
 			);
 		}
 	};
+
+	searchUser = isAuth(
+		async (_root: any, args: { user: string }, context: TContext) => {
+			try {
+				const findUser = await userModel.find({
+					username: { $regex: args.user },
+				});
+
+				const users: TVConversation[] = [];
+
+				if (findUser.length > 0) {
+					for (const i of findUser) {
+						const user: TVConversation = { user: i };
+						const findConversation = await conversationModel
+							.find({
+								$or: [
+									{
+										users: {
+											$in: [{ _id: i._id }, { _id: context.user?._id }],
+										},
+									},
+									{
+										users: {
+											$in: [{ _id: context.user?._id }, { _id: i._id }],
+										},
+									},
+								],
+							})
+							.sort({ createdAt: -1 });
+
+						if (findConversation.length > 0) {
+							for (const conversation of findConversation) {
+								const specificConversation = await messageHelper.handleGetSpecificConversation(conversation);
+								user.conversation = specificConversation;
+							}
+						}
+						users.push(user);
+					}
+				}
+				return {
+					data: users,
+				};
+			} catch (error: any) {
+				return new ApolloError(
+					`Unable to search user due to internal server error ${error.message}`
+				);
+			}
+		}
+	);
 }
 export const userMutation = new UserMutation();

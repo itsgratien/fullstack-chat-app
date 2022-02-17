@@ -1,8 +1,8 @@
 import { ApolloError } from 'apollo-server-express';
 import { isAuth } from '../../Helpers';
-import { TContext, TViewConversation } from '../../__generated__';
-import { messageModel, conversationModel, userModel } from '../../Models';
-
+import { TContext, TVConversation } from '../../__generated__';
+import { messageModel, conversationModel } from '../../Models';
+import { messageHelper } from './MessageHelper';
 class MessageQuery {
 	getMessages = isAuth(
 		async (_: any, args: { conversation: string }, context: TContext) => {
@@ -36,40 +36,17 @@ class MessageQuery {
 			}
 		}
 	);
+
 	getConversations = isAuth(
 		async (_root: any, _args: any, context: TContext) => {
 			try {
 				const find = await conversationModel.find({
 					users: { $in: [{ _id: context.user?._id }] },
 				});
-				const conversations: TViewConversation[] = [];
+				let conversations: TVConversation[] = [];
+
 				if (find.length > 0) {
-					for (const conversation of find) {
-						const specificConversation: TViewConversation = {
-							_id: conversation._id,
-							createdAt: conversation.createdAt,
-							updatedAt: conversation.updatedAt,
-						};
-						const findMessage = await messageModel
-							.find({
-								conversation: conversation._id,
-							})
-							.sort({ createdAt: -1 })
-							.populate({
-								path: 'sender',
-								select: '-password',
-								model: userModel,
-							});
-						if (findMessage && findMessage.length > 0) {
-							specificConversation.latestMessage = {
-								message: findMessage[0].message,
-								timestamp: String(findMessage[0].timestamp),
-								_id: findMessage[0]._id,
-							};
-							specificConversation.sender = findMessage[0].sender;
-						}
-						conversations.push(specificConversation);
-					}
+					conversations = await messageHelper.handleGetConvesations(find, String(context.user?._id));
 				}
 
 				return {

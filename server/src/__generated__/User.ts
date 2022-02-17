@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
 import { Request, Response } from 'express';
 import { JwtPayload } from 'jsonwebtoken';
+import { TViewConversation } from '.';
 
 export interface TUserModel {
   username: string;
@@ -40,6 +41,11 @@ export interface TAuthTokenPayload extends JwtPayload {
   _id: string;
 }
 
-export enum CookieName{
-  token = 'token'
+export enum CookieName {
+  token = 'token',
+}
+
+export interface TSearchUser {
+  conversations?: TViewConversation[];
+  user: TUser;
 }

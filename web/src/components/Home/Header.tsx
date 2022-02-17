@@ -13,10 +13,11 @@ export const Header = () => {
   const handleLogout = () => {
     apolloClient.cache.gc();
     localStorage.removeItem(Enum.Token);
+    localStorage.removeItem(Enum.LoggedInUser);
     router.push('/');
   };
 
-  const { data } = useQuery<Types.TGetLoggedInUser>(Types.GET_LOGGED_IN_USER);
+  const { data } = useQuery<Types.TGetLoggedInUser>(Types.GET_LOGGED_IN_USER, { fetchPolicy: 'cache-and-network' });
 
   if (!data || !data.loggedInUser) {
     return null;

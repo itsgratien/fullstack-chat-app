@@ -43,12 +43,17 @@ export const typeDefs = gql`
     timestamp: String!
   }
 
-  type GetConversation {
+  type ConversationDetail {
     _id: String!
     latestMessage: LatestMessage
     createdAt: String!
     updatedAt: String!
     sender: User
+  }
+
+  type GetConversation {
+    user: User!
+    conversation: ConversationDetail
   }
 
   type GetConversationResponse {
@@ -60,7 +65,7 @@ export const typeDefs = gql`
     receiver: String
   }
 
-  type HandleWhoIsTyping{
+  type HandleWhoIsTyping {
     message: String!
   }
 
@@ -84,6 +89,7 @@ export const typeDefs = gql`
       conversation: String
     ): SendMessageResponse!
     handleWhoIsTyping(message: String, receiver: String!): HandleWhoIsTyping
+    searchUser(user: String!): GetConversationResponse
   }
 
   type ReceiveMessageResponse {
