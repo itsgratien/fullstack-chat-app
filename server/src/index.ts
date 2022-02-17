@@ -64,7 +64,7 @@ const startServer = async () => {
 
 	await server.start();
 
-	server.applyMiddleware({ app });
+	server.applyMiddleware({ app, cors: false });
 
 	await new Promise<void>(resolve =>
 		httpServer.listen({ port: 4000 }, resolve)

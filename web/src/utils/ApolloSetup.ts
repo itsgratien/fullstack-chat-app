@@ -2,14 +2,15 @@ import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { Enum } from './Enum';
 import fetch from 'isomorphic-unfetch';
+import { getMainDefinition } from '@apollo/client/utilities';
 
 const isServer = typeof window === 'undefined';
 
+const httpUri = 'http://localhost:4000/graphql';
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql',
-  credentials: 'include',
+  uri: httpUri,
   headers: {
-    Authorization: isServer ? '' : localStorage.getItem(Enum.Token),
+    Authorization: isServer ? '' : String(localStorage.getItem(Enum.Token)),
   },
   fetch,
 });
@@ -21,13 +22,25 @@ const wsLink = () =>
       reconnect: true,
       connectionParams: {
         headers: {
-          Authorization: localStorage.getItem(Enum.Token),
+          Authorization: String(localStorage.getItem(Enum.Token)),
         },
       },
     },
   });
 
-export const splitLink = !isServer ? wsLink() : httpLink;
+export const splitLink = !isServer
+  ? split(
+      ({ query }) => {
+        const definition = getMainDefinition(query);
+        return (
+          definition.kind === 'OperationDefinition' &&
+          definition.operation === 'subscription'
+        );
+      },
+      wsLink(),
+      httpLink
+    )
+  : httpLink;
 
 export const apolloClient = new ApolloClient({
   cache: new InMemoryCache({

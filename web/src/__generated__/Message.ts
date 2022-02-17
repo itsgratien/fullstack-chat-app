@@ -5,13 +5,14 @@ export interface TConversationItem {
   message: string;
   timestamp: number;
   conversationId: string | number;
+  senderId?: string;
 }
 
 export interface TLatestMessage {
   message: string;
   timestamp: string;
 }
-export interface TGetConversation {
+export interface TGetConversationDetail {
   _id: string;
   latestMessage: TLatestMessage;
   createdAt: string;
@@ -19,14 +20,18 @@ export interface TGetConversation {
   sender: TUser;
 }
 
+export interface TGetAllConversation {
+  user: TUser;
+  conversation: TGetConversationDetail;
+}
 export interface TGetConversationResponse {
   getConversations: {
-    data: TGetConversation[];
+    data: TGetAllConversation[];
   };
 }
 
 export const GET_CONVERSATION_FRAGMENT = gql`
-  fragment GetConversationFragment on GetConversationResponse {
+  fragment GetConversationFragment on ConversationDetail {
     _id
     latestMessage {
       message
@@ -41,20 +46,19 @@ export const GET_CONVERSATION_FRAGMENT = gql`
   }
 `;
 export const GET_ALL_CONVERSATION = gql`
+  ${GET_CONVERSATION_FRAGMENT}
   query GetConversations {
     getConversations {
       data {
-        _id
-        latestMessage {
-          message
-          timestamp
-        }
-        sender {
-          username
+        user {
           _id
+          username
+          email
+          profilePicture
         }
-        createdAt
-        updatedAt
+        conversation {
+          ...GetConversationFragment
+        }
       }
     }
   }

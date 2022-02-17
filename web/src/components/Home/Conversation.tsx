@@ -5,7 +5,7 @@ import { SearchOutline as SearchIcon } from 'react-ionicons';
 import { ConversationItem } from './ConversationItem';
 import * as Types from '__generated__';
 interface Props {
-  conversations?: Types.TGetConversation[];
+  conversations?: Types.TGetAllConversation[];
 }
 export const Conversation = ({ conversations }: Props) => {
   return (
@@ -34,10 +34,11 @@ export const Conversation = ({ conversations }: Props) => {
             {conversations.map((item, index) => (
               <ConversationItem
                 item={{
-                  username: item.sender.username || '',
-                  conversationId: item._id,
-                  message: item.latestMessage.message,
-                  timestamp: Number(item.latestMessage.timestamp),
+                  username: item.user.username || '',
+                  conversationId: item.conversation._id,
+                  message: item.conversation.latestMessage.message,
+                  timestamp: Number(item.conversation.latestMessage.timestamp),
+                  senderId: item.conversation.sender._id
                 }}
                 key={index}
               />

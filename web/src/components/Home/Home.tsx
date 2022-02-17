@@ -12,9 +12,12 @@ export const Home = () => {
 
   const [receiverId, setReceiverId] = React.useState<string>();
 
-  const { data } = useQuery<Types.TGetConversationResponse>(
+  const { data, error } = useQuery<Types.TGetConversationResponse>(
     Types.GET_ALL_CONVERSATION
   );
+
+  console.log('data', data?.getConversations.data);
+  console.log('error', error);
   
   return (
     <main
