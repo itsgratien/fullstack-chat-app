@@ -8,7 +8,7 @@ import { object, string } from 'yup';
 import { Title } from './Title';
 import { Button } from './Button';
 import * as Types from '__generated__';
-import { Enum, loggedInUserVar } from 'utils';
+import { Enum } from 'utils';
 import { useRouter } from 'next/router';
 
 const loginSchema = object().shape({
@@ -28,8 +28,10 @@ export const Login = () => {
     {
       onCompleted: async res => {
         if (res && res.login) {
-          localStorage.setItem(Enum.token, res.login.token);
-          loggedInUserVar(res.login.data);
+          localStorage.setItem(Enum.Token, `Bearer ${res.login.token}`);
+          // store loggedin user in localstorage
+          const user = JSON.stringify(res.login.data);
+          localStorage.setItem(Enum.LoggedInUser, user);
           router.push('/home');
         }
       },

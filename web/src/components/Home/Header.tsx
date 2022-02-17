@@ -2,25 +2,22 @@ import React from 'react';
 import style from './Home.module.scss';
 import classname from 'classnames';
 import { PowerOutline } from 'react-ionicons';
-import { useQuery } from '@apollo/client';
 import * as Types from '__generated__';
-import { loggedInUserVar, apolloClient, Enum } from 'utils';
+import { apolloClient, Enum } from 'utils';
 import { useRouter } from 'next/router';
+import { useQuery } from '@apollo/client';
 
 export const Header = () => {
   const router = useRouter();
 
-  const { data } = useQuery<Types.TGetLoggedInUser>(
-    Types.GET_LOGGED_IN_USER
-  );
-
-  const handleLogout = () => { 
-    loggedInUserVar(undefined);
-    apolloClient().cache.gc();
-    localStorage.removeItem(Enum.token);
+  const handleLogout = () => {
+    apolloClient.cache.gc();
+    localStorage.removeItem(Enum.Token);
     router.push('/');
-  }
-  
+  };
+
+  const { data } = useQuery<Types.TGetLoggedInUser>(Types.GET_LOGGED_IN_USER);
+
   if (!data || !data.loggedInUser) {
     return null;
   }
@@ -29,11 +26,11 @@ export const Header = () => {
     <div
       className={classname(
         style.header,
-        'w-full flex items-center justify-between'
+        'relative flex justify-between items-center'
       )}
     >
-      <div className={classname('flex items-center')}>
-        <div>
+      <div className={classname('relative flex items-center')}>
+        <div className={style.hand}>
           <img src="/hand.png" alt="hand" />
         </div>
         <div className={style.greeting}>

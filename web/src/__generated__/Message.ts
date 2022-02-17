@@ -49,13 +49,41 @@ export const GET_ALL_CONVERSATION = gql`
           message
           timestamp
         }
-        sender{
+        sender {
           username
           _id
         }
         createdAt
         updatedAt
       }
+    }
+  }
+`;
+
+export interface TSendMessageArgs {
+  receiver: string;
+  message: string;
+  conversation?: string;
+}
+
+export interface TSendMessageResponse {
+  sendMessage: {
+    message: string;
+  };
+}
+
+export const SEND_MESSAGE_GQL = gql`
+  mutation SendMessage(
+    $receiver: String!
+    $message: String!
+    $conversation: String!
+  ) {
+    sendMessage(
+      message: $message
+      receiver: $receiver
+      conversation: $conversation
+    ) {
+      message
     }
   }
 `;

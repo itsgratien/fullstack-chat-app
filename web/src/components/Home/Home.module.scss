@@ -1,3 +1,7 @@
+.divider{
+  width: 900px;
+  margin: auto;
+}
 .conversation {
   width: 340px;
   background-color: white;
@@ -35,12 +39,10 @@
 }
 .rightSide {
   margin-left: 340px;
-  padding: 0 100px 0 60px;
 }
 .header {
-  padding: 20px 0px;
+  padding: 10px 0px;
   z-index: 100;
-  height: 10%;
   .greeting {
     font-size: 15px;
     font-weight: bold;
@@ -63,11 +65,11 @@
   }
 }
 .messages {
-  height: 80%;
   overflow-y: auto;
   overflow-x: hidden;
+  height: 80vh;
   .hint{
-    width: 250px;
+    width: 200px;
     margin: auto;
     span{
       color: rgba(0, 0, 0, 0.3);
@@ -76,19 +78,17 @@
   }
 }
 .writeMessage {
-  padding: 5px 0px;
   z-index: 100;
-  height: 10%;
-  padding-right: 200px;
+  height: 7vh;
+  padding: 0 50px;
   .textarea {
-    flex-grow: 1;
-    height: 90%;
-    border: 1px solid #f8f8f8;
+    height: 100%;
     background: white;
     padding: 20px;
     box-sizing: border-box;
-    border-radius: 10px;
+    border-radius: 30px;
     font-size: 14px;
+    width: 80%;
   }
   button {
     width: 60px;

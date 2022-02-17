@@ -5,27 +5,45 @@ import { Conversation } from './Conversation';
 import { Header } from './Header';
 import { WriteMessage } from './WriteMessage';
 import * as Types from '__generated__';
+import { useQuery } from '@apollo/client';
 
-interface Props{
-  conversations?: Types.TGetConversation[]
-}
-export const Home = ({ conversations }: Props) => {
+export const Home = () => {
+  const [conversationId, setConversationId] = React.useState<string>();
+
+  const [receiverId, setReceiverId] = React.useState<string>();
+
+  const { data } = useQuery<Types.TGetConversationResponse>(
+    Types.GET_ALL_CONVERSATION
+  );
+  
   return (
-    <main className={classname('w-full h-screen flex', style.home)}>
-      <Conversation conversations={conversations} />
+    <main
+      className={classname(
+        'w-full relative h-screen flex relative',
+        style.home
+      )}
+    >
+      <Conversation conversations={data?.getConversations.data} />
       <div className={classname('flex-grow relative', style.rightSide)}>
-        <Header />
-        <div className={classname('relative', style.messages)}>
-          <div
-            className={classname(
-              'flex items-center justify-center h-full',
-              style.hint
-            )}
-          >
-            <span>Click on your inbox section to preview message</span>
-          </div>
+        <div className={style.divider}>
+          <Header />
         </div>
-        <WriteMessage />
+        <div className={style.divider}>
+          <div className={classname('relative', style.messages)}>
+            <div
+              className={classname(
+                'flex items-center justify-center h-full',
+                style.hint
+              )}
+            >
+              <span>Click on your inbox section to preview message</span>
+            </div>
+          </div>
+          <WriteMessage
+            receiver={receiverId || ''}
+            conversation={conversationId}
+          />
+        </div>
       </div>
     </main>
   );

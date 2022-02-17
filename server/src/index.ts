@@ -17,13 +17,8 @@ import { isAuthForSubscription } from './Helpers';
 
 const startServer = async () => {
 	const app = express();
-
-	app.use(
-		cors({
-			credentials: true,
-			origin: '*'
-		})
-	);
+ 
+	app.use(cors());
 
 	const httpServer = http.createServer(app);
 
@@ -64,7 +59,7 @@ const startServer = async () => {
 				},
 			},
 		],
-		context: ({ req, res }) => ({req, res}),
+		context: ({ req, res }) => ({ req, res }),
 	});
 
 	await server.start();

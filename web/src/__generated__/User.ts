@@ -79,11 +79,26 @@ export interface TGetCurrentUserResponse {
 }
 
 export const GET_LOGGED_IN_USER = gql`
+  ${USER_FRAGMENT}
   query GetLoggedInUser {
-    loggedInUser @client
+    loggedInUser {
+      ...UserFragment
+    }
   }
 `;
 
-export interface TGetLoggedInUser{
+export const SET_LOGGED_IN_USER = gql`
+${USER_FRAGMENT}
+query SetLoggedInUser($id: String!){
+  loggedInUser(id: $id){
+    id
+    username
+    email
+    _id
+  }
+}
+`;
+
+export interface TGetLoggedInUser {
   loggedInUser: TUser;
 }

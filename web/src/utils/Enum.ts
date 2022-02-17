@@ -1,3 +1,4 @@
 export enum Enum{
-    token = 'token'
+    Token = 'Token',
+    LoggedInUser = 'LoggedInUser'
 }
