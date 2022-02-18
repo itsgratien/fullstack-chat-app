@@ -130,25 +130,28 @@ export interface TGetMessage {
   sender: TUser;
 }
 export interface TGetMessageResponse {
-  data: TGetMessage[];
+  getMessages: {
+    data: TGetMessage[];
+  };
 }
 
-export interface TGetMessageArgs{
+export interface TGetMessageArgs {
   conversation: string;
 }
 
 export const GET_ALL_MESSAGE_GQL = gql`
-  ${USER_FRAGMENT}
   query GetMessages($conversation: String!) {
     getMessages(conversation: $conversation) {
       data {
-        id
+        _id
         message
         createdAt
         updatedAt
         conversation
         sender {
-          ...UserFragment
+          _id
+          username
+          email
         }
       }
     }

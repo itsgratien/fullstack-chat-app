@@ -1,4 +1,4 @@
-.divider{
+.divider {
   width: 900px;
   margin: auto;
 }
@@ -68,12 +68,35 @@
   overflow-y: auto;
   overflow-x: hidden;
   height: 80vh;
-  .hint{
+  padding-top: 30px;
+  .hint {
     width: 200px;
     margin: auto;
-    span{
+    span {
       color: rgba(0, 0, 0, 0.3);
       font-size: 14px;
+    }
+  }
+  .messageUl {
+    padding: 5px;
+    li {
+      background-color: white;
+      width: 50%;
+      border-radius: 10px;
+      padding: 15px;
+      border: 1px solid #f8f8f8;
+      margin: 10px;
+      .userDetail{
+        span{
+          font-size: 14px;
+        }
+      }
+      .text {
+        span {
+          color: #808080;
+          font-size: 13px;
+        }
+      }
     }
   }
 }
