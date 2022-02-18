@@ -93,22 +93,22 @@ export const SEND_MESSAGE_GQL = gql`
 `;
 
 export const SEARCH_USER_GQL = gql`
-${GET_CONVERSATION_FRAGMENT}
-mutation SearchUser($user: String!){
-  searchUser(user: $user){
-    data{
-      user{
+  ${GET_CONVERSATION_FRAGMENT}
+  mutation SearchUser($user: String!) {
+    searchUser(user: $user) {
+      data {
+        user {
           _id
           username
           email
           profilePicture
-      }
-      conversation{
-        ...GetConversationFragment
+        }
+        conversation {
+          ...GetConversationFragment
+        }
       }
     }
   }
-}
 `;
 
 export interface TSearchUserArgs {
@@ -120,3 +120,37 @@ export interface TSearchUserResponse {
     data: TGetAllConversation[];
   };
 }
+
+export interface TGetMessage {
+  id: string;
+  conversation: string;
+  createdAt: string;
+  updatedAt: string;
+  message: string;
+  sender: TUser;
+}
+export interface TGetMessageResponse {
+  data: TGetMessage[];
+}
+
+export interface TGetMessageArgs{
+  conversation: string;
+}
+
+export const GET_ALL_MESSAGE_GQL = gql`
+  ${USER_FRAGMENT}
+  query GetMessages($conversation: String!) {
+    getMessages(conversation: $conversation) {
+      data {
+        id
+        message
+        createdAt
+        updatedAt
+        conversation
+        sender {
+          ...UserFragment
+        }
+      }
+    }
+  }
+`;

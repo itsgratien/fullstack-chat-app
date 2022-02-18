@@ -4,9 +4,23 @@ import style from './Home.module.scss';
 import { Conversation } from './Conversation';
 import { Header } from './Header';
 import { WriteMessage } from './WriteMessage';
+import * as Types from '__generated__';
+import { useQuery } from '@apollo/client';
 
 export const Home = () => {
   const [conversationId, setConversationId] = React.useState<string>();
+
+  const [message, setMessage] = React.useState<Types.TGetMessage[]>();
+
+  const res = useQuery<
+    Types.TGetMessageResponse,
+    Types.TGetMessageArgs
+  >(Types.GET_ALL_MESSAGE_GQL);
+
+  React.useEffect(() => {
+    if (conversationId) {
+    }
+  }, [conversationId]);
 
   return (
     <main
@@ -31,9 +45,7 @@ export const Home = () => {
               <span>Click on your inbox section to preview message</span>
             </div>
           </div>
-          <WriteMessage
-            conversation={conversationId}
-          />
+          <WriteMessage conversation={conversationId} />
         </div>
       </div>
     </main>
