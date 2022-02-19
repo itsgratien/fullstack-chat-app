@@ -64,7 +64,12 @@ export const Home = () => {
   };
 
   React.useEffect(() => {
-    if (receiveMessageSubscription && receiveMessageSubscription.data) {
+    if (
+      receiveMessageSubscription &&
+      receiveMessageSubscription.data &&
+      data?.loggedInUser._id ===
+        receiveMessageSubscription.data.receiveMessage.receiver
+    ) {
       const { receiveMessage: values } = receiveMessageSubscription.data;
 
       const receiveNewMessage: Types.TMessageItem = {
@@ -79,11 +84,11 @@ export const Home = () => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [receiveMessageSubscription]);
+  }, [receiveMessageSubscription, data]);
 
   React.useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages])
+  }, [messages]);
 
   if (!data || !data.loggedInUser) {
     return null;
