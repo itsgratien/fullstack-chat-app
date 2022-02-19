@@ -6,9 +6,12 @@ import { Header } from './Header';
 import { WriteMessage } from './WriteMessage';
 import * as Types from '__generated__';
 import { useLazyQuery, useQuery } from '@apollo/client';
+import { format } from 'timeago.js';
 
 export const Home = () => {
   const [conversationId, setConversationId] = React.useState<string>();
+
+  const [receiver, setReceiver] = React.useState<Types.TReceiver>();
 
   const [messages, setMessages] = React.useState<Types.TGetMessage[]>();
 
@@ -26,9 +29,11 @@ export const Home = () => {
     onError: e => console.log('error-getmessages', e.message),
   });
 
-  const handleChangeConversation = (value: string) => {
-    setConversationId(value);
-    getMessageFunc({ variables: { conversation: value } });
+  const handleChangeConversation = (value?: string) => {
+    if (value) {
+      setConversationId(value);
+      getMessageFunc({ variables: { conversation: value } });
+    }
   };
 
   if (!data || !data.loggedInUser) {
@@ -44,20 +49,38 @@ export const Home = () => {
         style.home
       )}
     >
-      <Conversation setConversationId={handleChangeConversation} />
+      <Conversation
+        setConversationId={handleChangeConversation}
+        setReceiver={setReceiver}
+      />
       <div className={classname('flex-grow relative', style.rightSide)}>
         <div className={style.divider}>
           <Header />
         </div>
         <div className={style.divider}>
           <div className={classname('relative', style.messages)}>
-            {messages ? (
+            {messages && receiver && (
               <>
                 {messages.length > 0 && (
                   <ul className={classname(style.messageUl)}>
                     {messages.map((item, itemKey) => (
-                      <li key={itemKey} className="flex flex-col">
-                        <div>
+                      <li
+                        key={itemKey}
+                        className={classname(
+                          'flex flex-col',
+                          item.sender._id === user._id
+                            ? 'items-end'
+                            : 'items-start'
+                        )}
+                      >
+                        <div
+                          className={classname(
+                            style.listContainer,
+                            item.sender._id === user._id
+                              ? 'bg-slate-50'
+                              : 'bg-neutral-50'
+                          )}
+                        >
                           <div
                             className={classname(
                               'flex justify-between items-center',
@@ -68,7 +91,7 @@ export const Home = () => {
                               {item.sender.username}
                             </span>
                             <small className="text-xs">
-                              {new Date().toDateString()}
+                              {format(new Date(item.stamp))}
                             </small>
                           </div>
                           <div className={style.text}>
@@ -80,7 +103,8 @@ export const Home = () => {
                   </ul>
                 )}
               </>
-            ) : (
+            )}
+            {!receiver && (
               <div
                 className={classname(
                   'flex items-center justify-center h-full',
@@ -91,7 +115,9 @@ export const Home = () => {
               </div>
             )}
           </div>
-          <WriteMessage conversation={conversationId} />
+          {receiver && (
+            <WriteMessage conversation={conversationId} receiver={receiver} username={user.username} />
+          )}
         </div>
       </div>
     </main>

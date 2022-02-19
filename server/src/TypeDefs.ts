@@ -36,11 +36,12 @@ export const typeDefs = gql`
     createdAt: String!
     updatedAt: String!
     conversation: String!
+    stamp: String!
   }
 
   type LatestMessage {
     message: String!
-    timestamp: String!
+    stamp: String!
   }
 
   type ConversationDetail {

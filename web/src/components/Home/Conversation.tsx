@@ -6,9 +6,10 @@ import { ConversationItem } from './ConversationItem';
 import * as Types from '__generated__';
 import { useMutation, useQuery } from '@apollo/client';
 interface Props {
-  setConversationId: (value: string) => void;
+  setConversationId: (value?: string) => void;
+  setReceiver: (values: Types.TReceiver) => void;
 }
-export const Conversation = ({ setConversationId }: Props) => {
+export const Conversation = ({ setConversationId, setReceiver }: Props) => {
   const [conversations, setConversations] =
     React.useState<Types.TGetAllConversation[]>();
 
@@ -74,11 +75,14 @@ export const Conversation = ({ setConversationId }: Props) => {
                   username: item.user.username || '',
                   conversationId: item.conversation && item.conversation._id,
                   message: item.conversation && item.conversation.latestMessage.message,
-                  timestamp: item.conversation && Number(item.conversation.latestMessage.timestamp),
+                  timestamp: item.conversation && Number(item.conversation.latestMessage.stamp),
                   senderId: item.conversation && item.conversation.sender._id,
                 }}
                 key={index}
-                handleClick={setConversationId}
+                handleClick={(conversation) => {
+                  setConversationId(conversation);
+                  setReceiver({id: item.user._id, username: item.user.username});
+                }}
               />
             ))}
           </ul>

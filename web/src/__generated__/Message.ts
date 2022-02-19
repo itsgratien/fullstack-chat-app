@@ -3,14 +3,14 @@ import { TUser, USER_FRAGMENT } from '.';
 export interface TConversationItem {
   username: string;
   message: string;
-  timestamp: number;
-  conversationId: string;
+  timestamp?: number;
+  conversationId?: string;
   senderId?: string;
 }
 
 export interface TLatestMessage {
   message: string;
-  timestamp: string;
+  stamp: string;
 }
 export interface TGetConversationDetail {
   _id: string;
@@ -35,7 +35,7 @@ export const GET_CONVERSATION_FRAGMENT = gql`
     _id
     latestMessage {
       message
-      timestamp
+      stamp
     }
     createdAt
     updatedAt
@@ -128,6 +128,7 @@ export interface TGetMessage {
   updatedAt: string;
   message: string;
   sender: TUser;
+  stamp: string;
 }
 export interface TGetMessageResponse {
   getMessages: {
@@ -148,6 +149,7 @@ export const GET_ALL_MESSAGE_GQL = gql`
         createdAt
         updatedAt
         conversation
+        stamp
         sender {
           _id
           username
@@ -157,3 +159,36 @@ export const GET_ALL_MESSAGE_GQL = gql`
     }
   }
 `;
+
+export const GET_WHO_IS_TYPING_GQL = gql`
+  subscription GetWhoIsTyping {
+    getWhoIsTyping {
+      message
+    }
+  }
+`;
+
+export const HANDLE_WHO_IS_TYPING_GQL = gql`
+  mutation HandleWhoIsTyping($message: String, $receiver: String!) {
+    handleWhoIsTyping(message: $message, receiver: $receiver) {
+      message
+    }
+  }
+`;
+
+export interface THandleWhoIsTypingArgs {
+  receiver: string;
+  message: string;
+}
+
+export interface THandleWhoIsTypingResponse {
+  handleWhoIsTyping: {
+    message: string;
+  };
+}
+
+export interface TGetWhoIsTypingResponse {
+  getWhoIsTyping: {
+    message: string;
+  };
+}

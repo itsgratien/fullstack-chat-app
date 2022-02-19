@@ -39,7 +39,7 @@ class MessageHelper {
         if (findMessage && findMessage.length > 0) {
             specificConversation.latestMessage = {
                 message: findMessage[0].message,
-                timestamp: String(findMessage[0].timestamp),
+                stamp: String(findMessage[0].stamp),
                 _id: findMessage[0]._id,
             };
             specificConversation.sender = findMessage[0].sender;

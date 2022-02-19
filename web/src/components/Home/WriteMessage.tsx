@@ -2,7 +2,7 @@ import React from 'react';
 import classname from 'classnames';
 import style from './Home.module.scss';
 import { PaperPlaneOutline } from 'react-ionicons';
-import { useMutation } from '@apollo/client';
+import { useMutation, useSubscription } from '@apollo/client';
 import * as Types from '__generated__';
 import { useFormik } from 'formik';
 import { object, string } from 'yup';
@@ -13,17 +13,36 @@ const SendMessageSchema = object().shape({
 });
 
 interface Props {
-  conversation?: string
+  conversation?: string;
+  receiver: Types.TReceiver;
+  username: string;
 }
 
-export const WriteMessage = ({ conversation }: Props) => {
+export const WriteMessage = ({ conversation, receiver, username }: Props) => {
+  const [placeholder, setPlaceholder] = React.useState<string>('write message');
+
   const [sendMessage] = useMutation<
     Types.TSendMessageResponse,
     Types.TSendMessageArgs
   >(Types.SEND_MESSAGE_GQL);
 
+  const [handleWhoIsTyping] = useMutation<
+    Types.THandleWhoIsTypingResponse,
+    Types.THandleWhoIsTypingArgs
+  >(Types.HANDLE_WHO_IS_TYPING_GQL, {
+    onError: e => {
+      console.log('whoIsTyping', e.message);
+    },
+  });
+
+  const subscriptionResponse = useSubscription<Types.TGetWhoIsTypingResponse>(
+    Types.GET_WHO_IS_TYPING_GQL
+  );
+
   const handleSubmit = (values: Types.TSendMessageArgs) =>
-    sendMessage({ variables: { ...values, receiver: '', conversation } });
+    sendMessage({
+      variables: { ...values, receiver: receiver.id, conversation },
+    });
 
   const formik = useFormik({
     initialValues: { receiver: '', message: '' },
@@ -34,6 +53,12 @@ export const WriteMessage = ({ conversation }: Props) => {
 
   const { values, errors } = formik;
 
+  React.useEffect(() => {
+    if (subscriptionResponse.data && subscriptionResponse.data.getWhoIsTyping) {
+      setPlaceholder(subscriptionResponse.data.getWhoIsTyping.message);
+    }
+  }, [subscriptionResponse]);
+
   return (
     <div className={classname('w-full', style.writeMessage)}>
       <form
@@ -43,7 +68,7 @@ export const WriteMessage = ({ conversation }: Props) => {
       >
         <textarea
           name="message"
-          placeholder="write message"
+          placeholder={placeholder}
           className={classname(
             'outline-none focus:outline-none',
             style.textarea,
@@ -51,7 +76,15 @@ export const WriteMessage = ({ conversation }: Props) => {
               ? 'border border-rose-600'
               : 'border border-gray-100'
           )}
-          onChange={formik.handleChange}
+          onChange={e => {
+            handleWhoIsTyping({
+              variables: {
+                message: `${username} is typing ...`,
+                receiver: receiver.id,
+              },
+            });
+            formik.handleChange(e);
+          }}
           value={values.message}
         ></textarea>
         <button

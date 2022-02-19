@@ -81,13 +81,16 @@
     padding: 5px;
     li {
       background-color: white;
-      width: 50%;
-      border-radius: 10px;
-      padding: 15px;
-      border: 1px solid #f8f8f8;
+      width: 100%;
       margin: 10px;
-      .userDetail{
-        span{
+      .listContainer {
+        border-radius: 20px;
+        padding: 15px 20px;
+        border: 1px solid #f8f8f8;
+        width: 60%;
+      }
+      .userDetail {
+        span {
           font-size: 14px;
         }
       }

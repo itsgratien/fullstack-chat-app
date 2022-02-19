@@ -20,7 +20,7 @@ const Schema = new mongoose.Schema<TMessage>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Conversation',
 		},
-		timestamp: {
+		stamp: {
 			type: Number,
 			required: true,
 		},

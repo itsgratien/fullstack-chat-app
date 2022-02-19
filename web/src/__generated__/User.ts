@@ -90,3 +90,8 @@ export const GET_LOGGED_IN_USER = gql`
 export interface TGetLoggedInUser {
   loggedInUser: TUser;
 }
+
+export interface TReceiver {
+  id: string;
+  username: string;
+}

@@ -21,9 +21,7 @@ const wsLink = () =>
     options: {
       reconnect: true,
       connectionParams: {
-        headers: {
-          Authorization: String(localStorage.getItem(Enum.Token)),
-        },
+        Authorization: String(localStorage.getItem(Enum.Token)),
       },
     },
   });

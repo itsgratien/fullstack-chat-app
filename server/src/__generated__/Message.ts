@@ -18,7 +18,7 @@ export interface TMessage {
   conversation: Types.ObjectId;
   message: string;
   read?: boolean;
-  timestamp: number;
+  stamp: number;
 }
 
 export interface TSendMessageArgs {
@@ -33,7 +33,7 @@ export interface TViewConversation {
   updatedAt: string;
   latestMessage?: {
     message: string;
-    timestamp: string;
+    stamp: string;
     _id: string | Types.ObjectId;
   };
   sender?: TUser | any;
