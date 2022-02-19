@@ -3,6 +3,7 @@ import { isAuth } from '../../Helpers';
 import { TContext, TSendMessageArgs } from '../../__generated__';
 import { messageModel, conversationModel, userModel } from '../../Models';
 import { pubsub, event } from '../../PubSub';
+import { messageHelper } from './MessageHelper';
 
 class MessageMutation {
   sendMessage = isAuth(
@@ -11,6 +12,10 @@ class MessageMutation {
         const { conversation } = args;
 
         const timestamp = String(Date.now());
+
+        if (!context.user) {
+          throw 'unauthorized access';
+        }
 
         const findUser = await userModel.findById(args.receiver);
         if (!findUser) {
@@ -23,8 +28,11 @@ class MessageMutation {
 
         pubsub.publish(event.receiveMessage, {
           receiveMessage: {
-            ...args,
             stamp: timestamp,
+            message: args.message,
+            conversation: args.conversation,
+            receiver: args.receiver,
+            sender: messageHelper.getSender(context.user),
           },
         });
 
@@ -35,7 +43,7 @@ class MessageMutation {
           if (!findConversation) {
             return new ApolloError('Unable to send message');
           }
-          await messageModel.create({
+          const send = await messageModel.create({
             conversation,
             message: args.message,
             sender: context.user ? String(context.user._id) : '',
@@ -44,13 +52,21 @@ class MessageMutation {
 
           return {
             message: 'message sent',
+            data: {
+              message: send.message,
+              conversation: send.conversation,
+              _id: send._id,
+              stamp: send.stamp,
+              receiver: args.receiver,
+              sender: messageHelper.getSender(context.user),
+            },
           };
         } else {
           const createConversation = await conversationModel.create({
             users: [{ _id: context.user?._id }, { _id: args.receiver }],
           });
 
-          await messageModel.create({
+          const send = await messageModel.create({
             conversation: createConversation._id,
             message: args.message,
             sender: context.user?._id || '',
@@ -59,6 +75,14 @@ class MessageMutation {
 
           return {
             message: 'message sent',
+            data: {
+              message: send.message,
+              conversation: send.conversation,
+              _id: send._id,
+              stamp: send.stamp,
+              receiver: args.receiver,
+              sender: messageHelper.getSender(context.user),
+            },
           };
         }
       } catch (error) {

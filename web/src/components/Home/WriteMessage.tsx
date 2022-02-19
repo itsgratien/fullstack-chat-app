@@ -9,22 +9,36 @@ import { object, string } from 'yup';
 
 const SendMessageSchema = object().shape({
   message: string().required('message is required'),
-  receiver: string().required('receiver is required'),
 });
 
 interface Props {
   conversation?: string;
   receiver: Types.TReceiver;
   username: string;
+  handleMessageResponse: (values: Types.TReceiveMessage) => void;
 }
 
-export const WriteMessage = ({ conversation, receiver, username }: Props) => {
+export const WriteMessage = ({
+  conversation,
+  receiver,
+  username,
+  handleMessageResponse,
+}: Props) => {
   const [placeholder, setPlaceholder] = React.useState<string>('write message');
 
   const [sendMessage] = useMutation<
     Types.TSendMessageResponse,
     Types.TSendMessageArgs
-  >(Types.SEND_MESSAGE_GQL);
+  >(Types.SEND_MESSAGE_GQL, {
+    onError: e => {
+      console.log('sendMessageError', e.message);
+    },
+    onCompleted: res => {
+      if (res.sendMessage && res.sendMessage.data) {
+        handleMessageResponse(res.sendMessage.data);
+      }
+    },
+  });
 
   const [handleWhoIsTyping] = useMutation<
     Types.THandleWhoIsTypingResponse,
@@ -39,16 +53,20 @@ export const WriteMessage = ({ conversation, receiver, username }: Props) => {
     Types.GET_WHO_IS_TYPING_GQL
   );
 
-  const handleSubmit = (values: Types.TSendMessageArgs) =>
+  const handleSubmit = (values: { message: string }) => {
     sendMessage({
       variables: { ...values, receiver: receiver.id, conversation },
     });
+  };
 
   const formik = useFormik({
-    initialValues: { receiver: '', message: '' },
+    initialValues: { message: '' },
     validationSchema: SendMessageSchema,
     validateOnChange: true,
-    onSubmit: handleSubmit,
+    onSubmit: values => {
+      handleSubmit(values);
+      formik.resetForm();
+    },
   });
 
   const { values, errors } = formik;
@@ -77,13 +95,14 @@ export const WriteMessage = ({ conversation, receiver, username }: Props) => {
               : 'border border-gray-100'
           )}
           onChange={e => {
+            if (e.target.value === '') setPlaceholder('write message');
+            formik.handleChange(e);
             handleWhoIsTyping({
               variables: {
                 message: `${username} is typing ...`,
                 receiver: receiver.id,
               },
             });
-            formik.handleChange(e);
           }}
           value={values.message}
         ></textarea>

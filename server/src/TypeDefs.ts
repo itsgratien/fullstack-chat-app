@@ -23,6 +23,7 @@ export const typeDefs = gql`
 
   type SendMessageResponse {
     message: String!
+    data: ReceiveMessageResponse
   }
 
   type GetMessageResponse {
@@ -97,7 +98,15 @@ export const typeDefs = gql`
     message: String!
     conversation: String
     receiver: String!
-    timestamp: String!
+    stamp: String!
+    _id: String
+    sender: Sender
+  }
+
+  type Sender{
+    id: String!
+    username: String!
+    profilePicture: String
   }
 
   type Subscription {

@@ -19,7 +19,7 @@ class MessageQuery {
 				}
 				const findMessage = await messageModel
 					.find({ conversation: findConversation._id })
-					.sort({ createdAt: -1 })
+					.sort({ createdAt: 1 })
 					.populate({
 						model: 'User',
 						select: '_id username profilePicture email',

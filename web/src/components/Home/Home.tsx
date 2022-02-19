@@ -5,7 +5,7 @@ import { Conversation } from './Conversation';
 import { Header } from './Header';
 import { WriteMessage } from './WriteMessage';
 import * as Types from '__generated__';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useSubscription } from '@apollo/client';
 import { format } from 'timeago.js';
 
 export const Home = () => {
@@ -13,7 +13,9 @@ export const Home = () => {
 
   const [receiver, setReceiver] = React.useState<Types.TReceiver>();
 
-  const [messages, setMessages] = React.useState<Types.TGetMessage[]>();
+  const [messages, setMessages] = React.useState<Types.TMessageItem[]>();
+
+  const scrollRef = React.useRef<any>();
 
   const { data } = useQuery<Types.TGetLoggedInUser>(Types.GET_LOGGED_IN_USER);
 
@@ -23,11 +25,23 @@ export const Home = () => {
   >(Types.GET_ALL_MESSAGE_GQL, {
     onCompleted: res => {
       if (res.getMessages && res.getMessages.data) {
-        setMessages(res.getMessages.data);
+        setMessages(
+          res.getMessages.data.map(item => ({
+            id: item._id,
+            sender: { id: item.sender._id, username: item.sender.username },
+            stamp: item.stamp,
+            message: item.message,
+          }))
+        );
       }
     },
     onError: e => console.log('error-getmessages', e.message),
   });
+
+  const receiveMessageSubscription =
+    useSubscription<Types.TReceiveMessageResponse>(
+      Types.RECEIVE_MESSAGE_SUBSCRIPTION_GQL
+    );
 
   const handleChangeConversation = (value?: string) => {
     if (value) {
@@ -35,6 +49,41 @@ export const Home = () => {
       getMessageFunc({ variables: { conversation: value } });
     }
   };
+
+  const handleMessageResponse = (values: Types.TReceiveMessage) => {
+    const receiveNewMessage: Types.TMessageItem = {
+      id: values._id,
+      message: values.message,
+      sender: values.sender,
+      stamp: values.stamp,
+    };
+
+    setMessages(
+      messages ? [...messages, receiveNewMessage] : [receiveNewMessage]
+    );
+  };
+
+  React.useEffect(() => {
+    if (receiveMessageSubscription && receiveMessageSubscription.data) {
+      const { receiveMessage: values } = receiveMessageSubscription.data;
+
+      const receiveNewMessage: Types.TMessageItem = {
+        id: values._id,
+        message: values.message,
+        sender: values.sender,
+        stamp: values.stamp,
+      };
+
+      setMessages(
+        messages ? [...messages, receiveNewMessage] : [receiveNewMessage]
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [receiveMessageSubscription]);
+
+  React.useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages])
 
   if (!data || !data.loggedInUser) {
     return null;
@@ -68,15 +117,16 @@ export const Home = () => {
                         key={itemKey}
                         className={classname(
                           'flex flex-col',
-                          item.sender._id === user._id
+                          item.sender.id === user._id
                             ? 'items-end'
                             : 'items-start'
                         )}
+                        ref={scrollRef}
                       >
                         <div
                           className={classname(
                             style.listContainer,
-                            item.sender._id === user._id
+                            item.sender.id === user._id
                               ? 'bg-slate-50'
                               : 'bg-neutral-50'
                           )}
@@ -116,7 +166,12 @@ export const Home = () => {
             )}
           </div>
           {receiver && (
-            <WriteMessage conversation={conversationId} receiver={receiver} username={user.username} />
+            <WriteMessage
+              conversation={conversationId}
+              receiver={receiver}
+              username={user.username}
+              handleMessageResponse={handleMessageResponse}
+            />
           )}
         </div>
       </div>

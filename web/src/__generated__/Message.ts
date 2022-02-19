@@ -73,6 +73,7 @@ export interface TSendMessageArgs {
 export interface TSendMessageResponse {
   sendMessage: {
     message: string;
+    data: TReceiveMessage;
   };
 }
 
@@ -80,7 +81,7 @@ export const SEND_MESSAGE_GQL = gql`
   mutation SendMessage(
     $receiver: String!
     $message: String!
-    $conversation: String!
+    $conversation: String
   ) {
     sendMessage(
       message: $message
@@ -88,6 +89,18 @@ export const SEND_MESSAGE_GQL = gql`
       conversation: $conversation
     ) {
       message
+      data {
+        _id
+        message
+        stamp
+        receiver
+        conversation
+        sender {
+          id
+          username
+          profilePicture
+        }
+      }
     }
   }
 `;
@@ -122,7 +135,7 @@ export interface TSearchUserResponse {
 }
 
 export interface TGetMessage {
-  id: string;
+  _id: string;
   conversation: string;
   createdAt: string;
   updatedAt: string;
@@ -138,6 +151,23 @@ export interface TGetMessageResponse {
 
 export interface TGetMessageArgs {
   conversation: string;
+}
+
+export interface THandleWhoIsTypingArgs {
+  receiver: string;
+  message: string;
+}
+
+export interface THandleWhoIsTypingResponse {
+  handleWhoIsTyping: {
+    message: string;
+  };
+}
+
+export interface TGetWhoIsTypingResponse {
+  getWhoIsTyping: {
+    message: string;
+  };
 }
 
 export const GET_ALL_MESSAGE_GQL = gql`
@@ -176,19 +206,46 @@ export const HANDLE_WHO_IS_TYPING_GQL = gql`
   }
 `;
 
-export interface THandleWhoIsTypingArgs {
-  receiver: string;
-  message: string;
-}
+export const RECEIVE_MESSAGE_SUBSCRIPTION_GQL = gql`
+  subscription ReceiveMessage {
+    receiveMessage {
+      _id
+      message
+      conversation
+      receiver
+      stamp
+      sender {
+        id
+        username
+        profilePicture
+      }
+    }
+  }
+`;
 
-export interface THandleWhoIsTypingResponse {
-  handleWhoIsTyping: {
-    message: string;
+export interface TMessageItem {
+  sender: {
+    username: string;
+    id: string;
   };
+  message: string;
+  stamp: string;
+  id?: string;
 }
 
-export interface TGetWhoIsTypingResponse {
-  getWhoIsTyping: {
-    message: string;
+export interface TReceiveMessageResponse {
+  receiveMessage: TReceiveMessage;
+}
+
+export interface TReceiveMessage {
+  _id?: string;
+  message: string;
+  conversation: string;
+  receiver: string;
+  stamp: string;
+  sender: {
+    id: string;
+    username: string;
+    profilePicture?: string;
   };
 }
