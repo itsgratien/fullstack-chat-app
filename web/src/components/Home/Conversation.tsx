@@ -15,8 +15,11 @@ export const Conversation = ({ setConversationId, setReceiver }: Props) => {
 
   const [searchValue, setSearchValue] = React.useState<string>();
 
+  const [activeConversation, setActiveConversation] = React.useState<string>();
+
   const { data } = useQuery<Types.TGetConversationResponse>(
-    Types.GET_ALL_CONVERSATION
+    Types.GET_ALL_CONVERSATION,
+    {fetchPolicy: 'no-cache'}
   );
 
   const [searchUserFunc] = useMutation<
@@ -81,8 +84,10 @@ export const Conversation = ({ setConversationId, setReceiver }: Props) => {
                 key={index}
                 handleClick={(conversation) => {
                   setConversationId(conversation);
-                  setReceiver({id: item.user._id, username: item.user.username});
+                  setReceiver({ id: item.user._id, username: item.user.username });
+                  setActiveConversation(conversation);
                 }}
+                activeConversation={activeConversation}
               />
             ))}
           </ul>

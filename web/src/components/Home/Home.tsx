@@ -48,6 +48,12 @@ export const Home = () => {
       setConversationId(value);
       getMessageFunc({ variables: { conversation: value } });
     }
+    if (!value) {
+      setMessages(undefined);
+    }
+    if (value !== conversationId) {
+      setMessages(undefined);
+    }
   };
 
   const handleMessageResponse = (values: Types.TReceiveMessage) => {

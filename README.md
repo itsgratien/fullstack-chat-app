@@ -1,2 +1,3 @@
 # fullstack-chat-app
-Chat application built on using nextjs, nodejs and  graphql
+Realtime text messaging app built on top of NextJs, React, NodeJs, Express, Graphql, Typescript and MongoDB
+

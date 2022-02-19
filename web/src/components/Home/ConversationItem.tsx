@@ -9,9 +9,10 @@ import * as Types from '__generated__';
 interface Props {
   item: TConversationItem;
   handleClick: (conversationId?: string) => void;
+  activeConversation?: string;
 }
 
-export const ConversationItem = ({ item, handleClick }: Props) => {
+export const ConversationItem = ({ item, handleClick, activeConversation }: Props) => {
   const { data } = useQuery<Types.TGetLoggedInUser>(Types.GET_LOGGED_IN_USER);
 
   if (!data || !data.loggedInUser) {
@@ -21,8 +22,13 @@ export const ConversationItem = ({ item, handleClick }: Props) => {
   const isCurrentUser = item.senderId === data.loggedInUser._id;
 
   return (
-    <li onClick={() => handleClick(item.conversationId)}>
-      <div className="flex justify-between">
+    <li
+      onClick={() => handleClick(item.conversationId)}
+      className={classNames(
+        activeConversation === item.conversationId && style.activeConversation
+      )}
+    >
+      <div className={classNames('flex justify-between')}>
         <span className={classNames('font-bold', style.username)}>
           {item.username}
         </span>
