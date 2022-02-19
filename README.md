@@ -24,7 +24,17 @@ App is divided into 2 parts. (Frontend and Backend)
 - run **yarn dev**
 
 ### UI Images
-<p>
+- /
+<p align="center">
+<img src="https://raw.githubusercontent.com/itsgratien/fullstack-chat-app/main/web/public/interfaces/2.png"/>
+</p>
+
+- /home
+<p align="center">
+<img src="https://raw.githubusercontent.com/itsgratien/fullstack-chat-app/main/web/public/interfaces/3.png"/>
+</p>
+<p align="center">
+<img src="https://raw.githubusercontent.com/itsgratien/fullstack-chat-app/main/web/public/interfaces/1.png"/>
 </p>
 
 ### What are the technologies used ?
@@ -35,6 +45,7 @@ App is divided into 2 parts. (Frontend and Backend)
 - [React](https://reactjs.org/)
 - [NextJs](https://nextjs.org/)
 - [Apollo Graphql](https://www.apollographql.com/)
+- [TailwindCSS](https://tailwindcss.com/)
 
 ### Author
 [gratien](https://github.com/itsgratien)
