@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://raw.githubusercontent.com/itsgratien/fullstack-chat-app/main/web/public/logo-c.png"/>
+<img src="https://raw.githubusercontent.com/itsgratien/fullstack-chat-app/main/web/public/messenger.png" width="150"/>
 </p>
 
 # FullStack Chat App
