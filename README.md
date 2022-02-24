@@ -5,11 +5,13 @@
 # FullStack Chat App
 Realtime messaging application
 
-### Prerequisite
-App is divided into 2 parts. (Frontend and Backend)
-
-- server directory is backend
-- web directory is frontend (web)
+## Pre-requisite
+- [NodeJS](https://nodejs.org)
+- [MongoDB](https://docs.mongodb.com/manual/)
+- [Typescript](https://www.typescriptlang.org)
+## Root Directory
+- server: directory which contains backend implementations
+- web: directory which contains web frontend implementations
 
 ### How to open Frontend (web) ?
 - open vscode and terminal
